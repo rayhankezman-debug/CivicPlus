@@ -49,7 +49,6 @@ interface AttestResult {
   easScanUrl: string;
   baseScanUrl: string;
   error?: string;
-  /** Original Supabase Storage error (returned by /api/attest on upload failure). */
   storageError?: unknown;
 }
 
@@ -70,11 +69,11 @@ function GpsIndicator({
   onRequest: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4">
+    <div className="rounded-2xl border border-[#DCE5DF] bg-[#F8FAF9] p-4 sm:p-5 transition-all">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-semibold text-white uppercase tracking-wider">
+          <MapPin className="w-4 h-4 text-[#083701]" />
+          <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider">
             Lokasi GPS
           </span>
         </div>
@@ -82,50 +81,50 @@ function GpsIndicator({
         {status === "idle" && (
           <button
             onClick={onRequest}
-            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors px-3 py-1 rounded-full border border-emerald-500/30 hover:border-emerald-400/50"
+            className="text-xs text-[#083701] hover:text-[#0b4802] bg-[#ECFAEB] transition-colors px-3.5 py-1 rounded-full border border-[#DCE5DF] font-semibold"
           >
             Aktifkan
           </button>
         )}
 
         {status === "loading" && (
-          <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
+          <Loader2 className="w-4 h-4 text-[#083701] animate-spin" />
         )}
 
         {status === "success" && coords && (
-          <span className="text-[10px] text-emerald-400/70 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+          <span className="text-[11px] font-semibold text-[#083701] bg-[#ECFAEB] px-2.5 py-0.5 rounded-full border border-[#DCE5DF]">
             ±{Math.round(coords.accuracy)}m akurasi
           </span>
         )}
 
         {(status === "denied" || status === "error") && (
-          <WifiOff className="w-4 h-4 text-red-400" />
+          <WifiOff className="w-4 h-4 text-red-500" />
         )}
       </div>
 
       {status === "idle" && (
-        <p className="text-xs text-zinc-500">
-          Klik &apos;Aktifkan&apos; untuk mendeteksi posisi lapangan.
+        <p className="text-xs text-zinc-500 font-light">
+          Klik &apos;Aktifkan&apos; untuk mendeteksi posisi lapangan secara otomatis.
         </p>
       )}
 
       {status === "loading" && (
-        <p className="text-xs text-zinc-400 animate-pulse">
-          Mendeteksi koordinat GPS...
+        <p className="text-xs text-zinc-600 animate-pulse font-light">
+          Mendeteksi koordinat GPS satelit...
         </p>
       )}
 
       {status === "success" && coords && (
-        <div className="grid grid-cols-2 gap-2 mt-1">
+        <div className="grid grid-cols-2 gap-3 mt-2.5 pt-2.5 border-t border-zinc-200/70">
           <div className="text-xs">
-            <span className="text-zinc-500">Lat </span>
-            <span className="text-zinc-200 font-mono">
+            <span className="text-zinc-500 font-medium">LATITUDE: </span>
+            <span className="text-zinc-900 font-mono font-semibold tabular-nums">
               {coords.latitude.toFixed(6)}
             </span>
           </div>
           <div className="text-xs">
-            <span className="text-zinc-500">Long </span>
-            <span className="text-zinc-200 font-mono">
+            <span className="text-zinc-500 font-medium">LONGITUDE: </span>
+            <span className="text-zinc-900 font-mono font-semibold tabular-nums">
               {coords.longitude.toFixed(6)}
             </span>
           </div>
@@ -133,14 +132,14 @@ function GpsIndicator({
       )}
 
       {status === "denied" && (
-        <p className="text-xs text-red-400">
-          Akses GPS ditolak. Aktifkan izin lokasi di pengaturan browser.
+        <p className="text-xs text-red-600 mt-1">
+          Akses GPS ditolak. Silakan aktifkan izin lokasi di pengaturan browser.
         </p>
       )}
 
       {status === "error" && (
-        <p className="text-xs text-orange-400">
-          Gagal mendapatkan lokasi. Coba lagi atau periksa sinyal GPS.
+        <p className="text-xs text-amber-700 mt-1">
+          Gagal mendapatkan lokasi. Pastikan sinyal GPS aktif dan coba lagi.
         </p>
       )}
     </div>
@@ -155,41 +154,45 @@ function SeverityGauge({ score }: { score: number }) {
   const isHigh = pct >= 70;
 
   const color = isHigh
-    ? "from-red-500 to-red-600"
+    ? "from-red-500 to-rose-600"
     : isMid
-    ? "from-orange-400 to-orange-500"
-    : "from-yellow-400 to-yellow-500";
+    ? "from-amber-400 to-orange-500"
+    : "from-emerald-500 to-[#083701]";
 
   const label = isHigh ? "Parah" : isMid ? "Sedang" : "Ringan";
   const textColor = isHigh
-    ? "text-red-400"
+    ? "text-red-600"
     : isMid
-    ? "text-orange-400"
-    : "text-yellow-400";
+    ? "text-amber-700"
+    : "text-emerald-700";
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <Gauge className="w-4 h-4 text-zinc-400" />
-          <span className="text-xs text-zinc-400">Severity Score</span>
+          <Gauge className="w-4 h-4 text-zinc-500" />
+          <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider">
+            Severity Score
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-sm font-bold ${textColor}`}>{pct}</span>
+          <span className={`text-base font-bold font-mono tabular-nums ${textColor}`}>
+            {pct}/100
+          </span>
           <span
-            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+            className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
               isHigh
-                ? "text-red-400 border-red-500/30 bg-red-500/10"
+                ? "text-red-700 border-red-200 bg-red-50"
                 : isMid
-                ? "text-orange-400 border-orange-500/30 bg-orange-500/10"
-                : "text-yellow-400 border-yellow-500/30 bg-yellow-500/10"
+                ? "text-amber-800 border-amber-200 bg-amber-50"
+                : "text-emerald-800 border-emerald-200 bg-emerald-50"
             }`}
           >
             {label}
           </span>
         </div>
       </div>
-      <div className="h-2 rounded-full bg-white/[0.05] overflow-hidden">
+      <div className="h-2.5 rounded-full bg-zinc-100 overflow-hidden p-0.5 border border-zinc-200">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${color} transition-all duration-700 ease-out`}
           style={{ width: `${pct}%` }}
@@ -202,16 +205,16 @@ function SeverityGauge({ score }: { score: number }) {
 /* ─────────────────── Loading spinner overlay ─────────────────────── */
 function AnalyzingOverlay() {
   return (
-    <div className="absolute inset-0 rounded-2xl bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center z-10 gap-4">
+    <div className="absolute inset-0 rounded-2xl bg-zinc-900/80 backdrop-blur-xs flex flex-col items-center justify-center z-10 gap-3">
       <div className="relative">
-        <div className="w-16 h-16 rounded-full border-2 border-emerald-500/30 flex items-center justify-center">
-          <Scan className="w-7 h-7 text-emerald-400 animate-pulse" />
+        <div className="w-14 h-14 rounded-full border-2 border-[#98FE67]/40 flex items-center justify-center">
+          <Scan className="w-6 h-6 text-[#98FE67] animate-pulse" />
         </div>
-        <span className="absolute inset-0 rounded-full border-t-2 border-emerald-400 animate-spin" />
+        <span className="absolute inset-0 rounded-full border-t-2 border-[#98FE67] animate-spin" />
       </div>
       <div className="text-center">
-        <p className="text-sm font-semibold text-white">Menganalisis gambar...</p>
-        <p className="text-xs text-zinc-400 mt-1">AI sedang mengevaluasi kerusakan jalan</p>
+        <p className="font-serif text-sm font-bold text-white">Menganalisis citra...</p>
+        <p className="text-xs text-zinc-300 font-light mt-0.5">AI sedang mengevaluasi kerusakan jalan</p>
       </div>
     </div>
   );
@@ -232,7 +235,7 @@ export default function CitizenReportForm() {
   const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
   const [verifyError, setVerifyError] = useState<string | null>(null);
 
-  /* ── Phase 3: Attestation state ── */
+  /* ── Attestation state ── */
   const [attestStatus, setAttestStatus] = useState<AttestStatus>("idle");
   const [attestResult, setAttestResult] = useState<AttestResult | null>(null);
   const [attestError, setAttestError] = useState<string | null>(null);
@@ -306,7 +309,6 @@ export default function CitizenReportForm() {
       } catch {
         setVerifyError("Gagal memproses gambar. Coba file lain.");
       }
-      // Reset file input so the same file can be re-selected
       e.target.value = "";
     },
     []
@@ -343,7 +345,7 @@ export default function CitizenReportForm() {
     }
   };
 
-  /* ── Phase 3: Attestation helpers ── */
+  /* ── Attestation helpers ── */
   function resetAttestState() {
     setAttestStatus("idle");
     setAttestResult(null);
@@ -366,8 +368,6 @@ export default function CitizenReportForm() {
     setAttestResult(null);
 
     try {
-      // Image is sent as base64 to the backend, which uploads it to Supabase
-      // Storage with the service-role key (no direct browser → Storage upload).
       const res = await fetch("/api/attest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -422,7 +422,7 @@ export default function CitizenReportForm() {
       />
 
       {/* ── Input Mode Tabs ── */}
-      <div className="flex rounded-xl border border-white/[0.07] bg-white/[0.03] p-1 gap-1">
+      <div className="flex rounded-full border border-zinc-200/80 bg-zinc-100 p-1 gap-1">
         {(["camera", "upload"] as InputMode[]).map((mode) => (
           <button
             key={mode}
@@ -430,10 +430,10 @@ export default function CitizenReportForm() {
               setInputMode(mode);
               handleRetake();
             }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 min-h-[38px] ${
               inputMode === mode
-                ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
-                : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
+                ? "bg-[#083701] text-white shadow-xs"
+                : "text-zinc-600 hover:text-zinc-900"
             }`}
           >
             {mode === "camera" ? (
@@ -441,13 +441,13 @@ export default function CitizenReportForm() {
             ) : (
               <Upload className="w-3.5 h-3.5" />
             )}
-            {mode === "camera" ? "Kamera Langsung" : "Unggah Foto"}
+            <span>{mode === "camera" ? "Kamera Langsung" : "Unggah Foto"}</span>
           </button>
         ))}
       </div>
 
-      {/* ── Camera / Upload Area ── */}
-      <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] bg-black/40 aspect-video flex items-center justify-center">
+      {/* ── Camera / Upload Viewport Area ── */}
+      <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-950 aspect-video flex items-center justify-center shadow-inner">
         {isVerifying && <AnalyzingOverlay />}
 
         {/* ── Camera Mode ── */}
@@ -465,21 +465,22 @@ export default function CitizenReportForm() {
                   onUserMediaError={() => setIsCameraReady(false)}
                   className="w-full h-full object-cover"
                 />
-                {/* Viewfinder overlay */}
+                {/* Viewfinder corner brackets */}
                 <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-3 left-3 w-6 h-6 border-t-2 border-l-2 border-emerald-400/60 rounded-tl-sm" />
-                  <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-emerald-400/60 rounded-tr-sm" />
-                  <div className="absolute bottom-14 left-3 w-6 h-6 border-b-2 border-l-2 border-emerald-400/60 rounded-bl-sm" />
-                  <div className="absolute bottom-14 right-3 w-6 h-6 border-b-2 border-r-2 border-emerald-400/60 rounded-br-sm" />
+                  <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#98FE67] rounded-tl-sm" />
+                  <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#98FE67] rounded-tr-sm" />
+                  <div className="absolute bottom-16 left-4 w-6 h-6 border-b-2 border-l-2 border-[#98FE67] rounded-bl-sm" />
+                  <div className="absolute bottom-16 right-4 w-6 h-6 border-b-2 border-r-2 border-[#98FE67] rounded-br-sm" />
                 </div>
-                {/* Capture button */}
+                {/* Capture shutter button */}
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center">
                   <button
                     onClick={handleCapture}
                     disabled={!isCameraReady}
-                    className="w-14 h-14 rounded-full bg-white/90 hover:bg-white border-4 border-emerald-400 flex items-center justify-center shadow-2xl shadow-emerald-500/30 transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-13 h-13 rounded-full bg-white hover:bg-zinc-100 border-4 border-[#98FE67] flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label="Ambil foto"
                   >
-                    <Camera className="w-6 h-6 text-emerald-700" />
+                    <Camera className="w-5 h-5 text-[#083701]" />
                   </button>
                 </div>
               </>
@@ -494,9 +495,9 @@ export default function CitizenReportForm() {
                 />
                 <button
                   onClick={handleRetake}
-                  className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-xs text-white hover:bg-black/80 transition-colors"
+                  className="absolute top-3 right-3 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-xs border border-white/20 text-xs font-semibold text-white hover:bg-black transition-colors"
                 >
-                  <RotateCcw className="w-3 h-3" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   Ulangi
                 </button>
               </>
@@ -510,19 +511,19 @@ export default function CitizenReportForm() {
             {!capturedImage ? (
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex flex-col items-center gap-3 text-center p-8 w-full h-full hover:bg-white/[0.02] transition-colors group"
+                className="flex flex-col items-center gap-3 text-center p-8 w-full h-full hover:bg-white/[0.03] transition-colors group justify-center"
               >
-              <div className="w-14 h-14 rounded-2xl border-2 border-dashed border-zinc-600 group-hover:border-emerald-500/60 flex items-center justify-center transition-colors">
-                <Upload className="w-6 h-6 text-zinc-500 group-hover:text-emerald-400 transition-colors" />
-              </div>
-              <div>
-                <p className="text-sm text-zinc-300 font-medium group-hover:text-white transition-colors">
-                  Pilih foto kerusakan jalan
-                </p>
-                <p className="text-xs text-zinc-600 mt-1">
-                  JPG, PNG, WEBP — maksimal 10 MB
-                </p>
-              </div>
+                <div className="w-12 h-12 rounded-2xl border-2 border-dashed border-zinc-500 group-hover:border-[#083701] flex items-center justify-center transition-colors bg-white/5">
+                  <Upload className="w-5 h-5 text-zinc-400 group-hover:text-[#083701] transition-colors" />
+                </div>
+                <div>
+                  <p className="text-sm text-zinc-200 font-semibold group-hover:text-white transition-colors">
+                    Pilih foto kerusakan jalan
+                  </p>
+                  <p className="text-xs text-zinc-400 mt-0.5 font-light">
+                    JPG, PNG, WEBP — maksimal 10 MB
+                  </p>
+                </div>
               </button>
             ) : (
               <>
@@ -534,9 +535,9 @@ export default function CitizenReportForm() {
                 />
                 <button
                   onClick={handleRetake}
-                  className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-xs text-white hover:bg-black/80 transition-colors"
+                  className="absolute top-3 right-3 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-xs border border-white/20 text-xs font-semibold text-white hover:bg-black transition-colors"
                 >
-                  <RotateCcw className="w-3 h-3" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   Ganti Foto
                 </button>
               </>
@@ -553,21 +554,21 @@ export default function CitizenReportForm() {
         )}
       </div>
 
-      {/* ── Verify Button ── */}
+      {/* ── Verify Button (High Contrast Action) ── */}
       <button
         onClick={handleVerify}
         disabled={!canVerify}
-        className="w-full py-3.5 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:scale-[1.01] active:scale-[0.99]"
+        className="w-full py-4 px-6 rounded-2xl font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed bg-[#98FE67] hover:bg-[#85f352] text-[#083701] shadow-md shadow-[#98FE67]/25 hover:scale-[1.01] active:scale-[0.99] uppercase min-h-[48px]"
       >
         {isVerifying ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Menganalisis dengan AI...
+            <Loader2 className="w-4 h-4 animate-spin text-[#083701]" />
+            <span>Menganalisis dengan AI...</span>
           </>
         ) : (
           <>
-            <Scan className="w-4 h-4" />
-            Verifikasi Kerusakan dengan AI
+            <Scan className="w-4 h-4 text-[#083701]" />
+            <span>Verifikasi Kerusakan dengan AI</span>
           </>
         )}
       </button>
@@ -575,73 +576,71 @@ export default function CitizenReportForm() {
       {/* ── AI Result Card ── */}
       {verifyResult && (
         <div
-          className={`rounded-2xl border p-5 space-y-4 transition-all duration-500 ${
+          className={`rounded-2xl border p-5 sm:p-6 space-y-4 transition-all duration-500 shadow-sm ${
             verifyResult.isValidRoadDamage
-              ? "border-emerald-500/30 bg-emerald-500/[0.06]"
-              : "border-red-500/30 bg-red-500/[0.06]"
+              ? "border-[#DCE5DF] bg-[#ECFAEB]/60"
+              : "border-red-200 bg-red-50/60"
           }`}
         >
           {/* Header */}
           <div className="flex items-start gap-3">
             {verifyResult.isValidRoadDamage ? (
-              <div className="flex-shrink-0 w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-[#083701] text-[#98FE67] flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5" />
               </div>
             ) : (
-              <div className="flex-shrink-0 w-9 h-9 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                <ShieldAlert className="w-5 h-5 text-red-400" />
+              <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+                <ShieldAlert className="w-5 h-5" />
               </div>
             )}
             <div>
               <p
-                className={`text-sm font-bold ${
+                className={`font-serif text-base font-bold ${
                   verifyResult.isValidRoadDamage
-                    ? "text-emerald-400"
-                    : "text-red-400"
+                    ? "text-[#083701]"
+                    : "text-red-700"
                 }`}
               >
                 {verifyResult.isValidRoadDamage
                   ? "Kerusakan Jalan Terverifikasi"
                   : "Foto Ditolak oleh AI"}
               </p>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-500 mt-0.5 font-light">
                 Confidence:{" "}
-                <span className="text-zinc-300 font-mono">
+                <span className="text-zinc-800 font-mono font-semibold tabular-nums">
                   {(verifyResult.confidence * 100).toFixed(1)}%
                 </span>
               </p>
             </div>
           </div>
 
-          {/* Severity gauge — only shown for valid reports */}
+          {/* Severity gauge */}
           {verifyResult.isValidRoadDamage && verifyResult.severityScore > 0 && (
             <SeverityGauge score={verifyResult.severityScore} />
           )}
 
           {/* Reason */}
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
-            <p className="text-xs font-semibold text-zinc-400 mb-1.5 uppercase tracking-wider">
-              Evaluasi AI
+          <div className="rounded-xl border border-zinc-200 bg-white p-3.5 shadow-2xs">
+            <p className="text-[10px] font-bold text-zinc-400 mb-1 uppercase tracking-wider">
+              Evaluasi AI Gemini
             </p>
-            <p className="text-xs text-zinc-300 leading-relaxed">
+            <p className="text-xs text-zinc-700 leading-relaxed font-normal">
               {verifyResult.reason}
             </p>
           </div>
         </div>
       )}
 
-      {/* ═══════════════ Phase 3: On-Chain Attestation Section ═════════════ */}
-
-      {/* ── GPS warning when valid but no GPS ── */}
+      {/* ── GPS warning ── */}
       {verifyResult?.isValidRoadDamage && !gpsCoords && attestStatus !== "success" && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] p-4 flex items-start gap-3">
-          <MapPin className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+          <MapPin className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-amber-400 mb-1">
+            <p className="text-xs font-bold text-amber-800 mb-1">
               Koordinat GPS Diperlukan
             </p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Aktifkan GPS terlebih dahulu untuk mengirim laporan ke blockchain.
+            <p className="text-xs text-amber-900 leading-relaxed font-light">
+              Aktifkan izin lokasi GPS terlebih dahulu untuk mengirimkan laporan resmi ke blockchain.
             </p>
           </div>
         </div>
@@ -653,16 +652,16 @@ export default function CitizenReportForm() {
           id="btn-submit-onchain"
           onClick={handleAttest}
           disabled={!canAttest}
-          className="w-full py-3.5 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2.5 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:scale-[1.01] active:scale-[0.99]"
+          className="w-full py-4 px-6 rounded-2xl font-bold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed bg-[#083701] hover:bg-[#0c4e03] text-white shadow-md shadow-[#083701]/20 hover:scale-[1.01] active:scale-[0.99] uppercase min-h-[48px]"
         >
           {attestStatus === "submitting" ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#98FE67]" />
               <span>Menerbitkan Atestasi On-Chain di Base Sepolia... (Gasless)</span>
             </>
           ) : (
             <>
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 text-[#98FE67]" />
               <span>Kirim Laporan Resmi (On-Chain)</span>
             </>
           )}
@@ -671,92 +670,85 @@ export default function CitizenReportForm() {
 
       {/* ── Attestation Success Card ── */}
       {attestStatus === "success" && attestResult && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/[0.08] to-teal-500/[0.04] p-5 space-y-4 transition-all duration-500 animate-in">
-          {/* Success Badge */}
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 sm:p-6 space-y-3.5 transition-all duration-500 animate-in shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#083701] text-[#98FE67] flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                  ✓ Tercatat Abadi di Base Sepolia Testnet
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500 mt-1">
-                Laporan kerusakan jalan telah diatestasi secara permanen di blockchain.
+              <span className="text-xs font-bold text-[#083701] bg-[#ECFAEB] border border-emerald-200 px-3 py-0.5 rounded-full uppercase tracking-wider">
+                ✓ Tercatat Abadi di Base Sepolia
+              </span>
+              <p className="text-xs text-zinc-600 mt-1 font-light">
+                Bukti kerusakan jalan telah diatestasi secara permanen melalui protokol EAS.
               </p>
             </div>
           </div>
 
-          {/* Attestation UID */}
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 space-y-2">
+          <div className="rounded-xl border border-emerald-200 bg-white p-3 space-y-1 shadow-2xs">
             <div className="flex items-center gap-1.5">
               <Link2 className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                 Attestation UID
               </span>
             </div>
-            <p className="text-xs text-zinc-200 font-mono break-all leading-relaxed">
+            <p className="text-xs text-zinc-900 font-mono break-all leading-relaxed tabular-nums">
               {attestResult.uid}
             </p>
           </div>
 
-          {/* TX Hash */}
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 space-y-2">
+          <div className="rounded-xl border border-emerald-200 bg-white p-3 space-y-1 shadow-2xs">
             <div className="flex items-center gap-1.5">
               <Link2 className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                 Transaction Hash
               </span>
             </div>
-            <p className="text-xs text-zinc-200 font-mono break-all leading-relaxed">
+            <p className="text-xs text-zinc-900 font-mono break-all leading-relaxed tabular-nums">
               {attestResult.txHash}
             </p>
           </div>
 
-          {/* Explorer Links */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
             <a
               href={attestResult.easScanUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/[0.05] border border-white/[0.08] text-xs font-semibold text-blue-400 hover:bg-white/[0.08] hover:border-blue-500/30 transition-all duration-200 group"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white border border-emerald-200 text-xs font-semibold text-[#083701] hover:bg-emerald-50 transition-colors shadow-2xs group"
             >
               <ExternalLink className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-              View on EAS Scan
+              <span>Lihat di EAS Scan</span>
             </a>
             <a
               href={attestResult.baseScanUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white/[0.05] border border-white/[0.08] text-xs font-semibold text-violet-400 hover:bg-white/[0.08] hover:border-violet-500/30 transition-all duration-200 group"
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white border border-emerald-200 text-xs font-semibold text-sky-700 hover:bg-sky-50 transition-colors shadow-2xs group"
             >
               <ExternalLink className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-              View on BaseScan
+              <span>Lihat di BaseScan</span>
             </a>
           </div>
 
-          {/* New Report Button */}
           <button
             onClick={resetAll}
-            className="w-full py-3 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-300 bg-white/[0.06] border border-white/[0.1] text-zinc-300 hover:bg-white/[0.1] hover:text-white hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 shadow-2xs"
           >
-            <RefreshCw className="w-4 h-4" />
-            Buat Laporan Baru
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Buat Laporan Baru</span>
           </button>
         </div>
       )}
 
       {/* ── Attestation Error ── */}
       {attestStatus === "error" && attestError && (
-        <div className="rounded-2xl border border-red-500/30 bg-red-500/[0.06] p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-red-400 mb-1">
+            <p className="text-xs font-bold text-red-700 mb-1">
               Gagal Mengirim ke Blockchain
             </p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-red-800 leading-relaxed font-light">
               {attestError}
             </p>
           </div>
@@ -765,13 +757,13 @@ export default function CitizenReportForm() {
 
       {/* ── API Error ── */}
       {verifyError && (
-        <div className="rounded-2xl border border-orange-500/30 bg-orange-500/[0.06] p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-orange-400 mb-1">
+            <p className="text-xs font-bold text-amber-800 mb-1">
               Terjadi Kesalahan
             </p>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-amber-900 leading-relaxed font-light">
               {verifyError}
             </p>
           </div>

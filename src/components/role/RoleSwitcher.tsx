@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * RoleSwitcher — sticky navbar with a segmented role selector and the
- * unified PIN authentication dialog (for the Contractor role).
+ * RoleSwitcher — Clean light navbar with CivicPlus branding,
+ * role selector (PERAN: Warga / Kontraktor), and contractor PIN modal.
  */
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -26,13 +26,6 @@ const ROLE_ITEMS: { role: Role; icon: typeof Users; short: string }[] = [
 /** Roles that show a lock icon when not active. */
 const PROTECTED_ROLES = new Set<Role>(["contractor"]);
 
-const ROLE_STYLES: Record<Role, string> = {
-  citizen:
-    "bg-gradient-to-r from-emerald-500/20 to-teal-500/15 text-emerald-300 border-emerald-500/30 shadow-emerald-500/10",
-  contractor:
-    "bg-gradient-to-r from-amber-500/20 to-orange-500/15 text-amber-300 border-amber-500/30 shadow-amber-500/10",
-};
-
 /* ── PIN Dialog configuration per protected role ─────────────────────── */
 
 const PIN_DIALOG_CONFIG: Record<
@@ -40,15 +33,6 @@ const PIN_DIALOG_CONFIG: Record<
   {
     title: string;
     subtitle: string;
-    borderColor: string;
-    iconBgFrom: string;
-    iconBgTo: string;
-    iconBorder: string;
-    iconColor: string;
-    btnGradient: string;
-    btnShadow: string;
-    focusBorder: string;
-    focusRing: string;
     submitIcon: typeof HardHat;
     submitLabel: string;
   }
@@ -56,16 +40,7 @@ const PIN_DIALOG_CONFIG: Record<
   contractor: {
     title: "Otentikasi Kontraktor / Dinas",
     subtitle:
-      "Masukkan PIN otentikasi untuk membuka Portal Resolusi & AI Spatial Matcher.",
-    borderColor: "border-amber-500/20",
-    iconBgFrom: "from-amber-500/25",
-    iconBgTo: "to-orange-500/15",
-    iconBorder: "border-amber-500/30",
-    iconColor: "text-amber-400",
-    btnGradient: "from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500",
-    btnShadow: "shadow-amber-500/20",
-    focusBorder: "focus:border-amber-500/50",
-    focusRing: "focus:ring-amber-500/20",
+      "Masukkan PIN otentikasi resmi untuk membuka Portal Resolusi & AI Spatial Matcher.",
     submitIcon: HardHat,
     submitLabel: "Masuk sebagai Kontraktor",
   },
@@ -85,7 +60,7 @@ function RolePinDialog() {
     if (!isPinPromptOpen) return;
     setPin("");
     setError(null);
-    const t = setTimeout(() => inputRef.current?.focus(), 50);
+    const t = setTimeout(() => inputRef.current?.focus(), 60);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && closePinPrompt();
     window.addEventListener("keydown", onKey);
     return () => {
@@ -121,33 +96,37 @@ function RolePinDialog() {
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={handleClose} />
+      <div
+        className="absolute inset-0 bg-zinc-900/60 backdrop-blur-xs transition-opacity"
+        onClick={handleClose}
+      />
       <form
         onSubmit={handleSubmit}
         role="dialog"
         aria-modal="true"
         aria-labelledby="pin-dialog-title"
-        className={`relative w-full max-w-sm rounded-3xl border ${cfg.borderColor} bg-zinc-900/95 backdrop-blur-2xl p-6 shadow-2xl shadow-black/60`}
+        className="relative w-full max-w-sm rounded-3xl border border-zinc-200 bg-white p-6 sm:p-7 shadow-2xl shadow-zinc-900/20"
       >
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
           aria-label="Tutup"
         >
           <X className="w-4 h-4" />
         </button>
 
-        <div className="flex flex-col items-center text-center mb-5">
-          <div
-            className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cfg.iconBgFrom} ${cfg.iconBgTo} border ${cfg.iconBorder} flex items-center justify-center mb-3`}
-          >
-            <Lock className={`w-6 h-6 ${cfg.iconColor}`} />
+        <div className="flex flex-col items-center text-center mb-6">
+          <div className="w-14 h-14 rounded-2xl bg-[#ECFAEB] border border-[#DCE5DF] flex items-center justify-center mb-3.5 shadow-xs">
+            <Lock className="w-6 h-6 text-[#083701]" />
           </div>
-          <h3 id="pin-dialog-title" className="text-sm font-bold text-white tracking-wide">
+          <h3
+            id="pin-dialog-title"
+            className="font-serif text-lg font-bold text-zinc-900 tracking-wide"
+          >
             {cfg.title}
           </h3>
-          <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+          <p className="text-xs text-zinc-500 mt-1.5 leading-relaxed max-w-[260px]">
             {cfg.subtitle}
           </p>
         </div>
@@ -156,7 +135,7 @@ function RolePinDialog() {
           PIN {ROLE_LABELS[pinPromptRole]}
         </label>
         <div className="relative">
-          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input
             id="role-pin"
             ref={inputRef}
@@ -168,12 +147,12 @@ function RolePinDialog() {
               setError(null);
             }}
             placeholder="••••••••"
-            className={`w-full pl-10 pr-3 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm text-white tracking-[0.3em] placeholder:tracking-[0.3em] placeholder:text-zinc-600 focus:outline-none ${cfg.focusBorder} focus:ring-2 ${cfg.focusRing} transition`}
+            className="w-full pl-10 pr-4 py-3 rounded-2xl bg-zinc-50 border border-zinc-200 text-sm text-zinc-900 tracking-[0.3em] placeholder:tracking-[0.3em] placeholder:text-zinc-400 focus:outline-none focus:border-[#083701] focus:ring-2 focus:ring-[#083701]/10 transition-all font-mono"
           />
         </div>
 
         {error && (
-          <p className="mt-2 text-xs text-red-400" role="alert">
+          <p className="mt-2.5 text-xs text-red-600 text-center font-medium" role="alert">
             {error}
           </p>
         )}
@@ -181,15 +160,17 @@ function RolePinDialog() {
         <button
           type="submit"
           disabled={!pin.trim() || submitting}
-          className={`mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r ${cfg.btnGradient} text-white shadow-lg ${cfg.btnShadow} disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
+          className="mt-5 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-xs sm:text-sm font-bold tracking-wide bg-[#083701] hover:bg-[#0c4e03] text-white shadow-md shadow-[#083701]/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
         >
           {submitting ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" /> Memverifikasi…
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Memverifikasi…</span>
             </>
           ) : (
             <>
-              <SubmitIcon className="w-4 h-4" /> {cfg.submitLabel}
+              <SubmitIcon className="w-4 h-4" />
+              <span>{cfg.submitLabel}</span>
             </>
           )}
         </button>
@@ -205,28 +186,30 @@ export default function RoleSwitcher() {
 
   return (
     <>
-      <header className="sticky top-0 z-[1000] w-full border-b border-white/[0.06] bg-[#09090b]/80 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 h-14">
+      <header className="sticky top-0 z-[1000] w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md transition-all shadow-xs">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 h-16">
           {/* Brand */}
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Shield className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-[#083701] flex items-center justify-center shadow-xs flex-shrink-0">
+              <Shield className="w-4 h-4 text-[#98FE67]" />
             </div>
-            <span className="hidden sm:inline text-sm font-bold tracking-tight">
-              <span className="text-white">Civic</span>
-              <span className="text-emerald-400">Plus</span>
-            </span>
+            <div>
+              <div className="flex items-baseline leading-none font-serif text-lg font-bold tracking-tight">
+                <span className="text-zinc-900">Civic</span>
+                <span className="text-[#083701]">Plus</span>
+              </div>
+            </div>
           </div>
 
           {/* Segmented role selector */}
           <div className="flex items-center gap-2">
-            <span className="hidden md:inline text-[10px] uppercase tracking-[0.15em] text-zinc-500">
-              Peran
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+              Peran:
             </span>
             <div
               role="radiogroup"
               aria-label="Pilih peran"
-              className="flex items-center rounded-xl bg-white/[0.03] border border-white/[0.06] p-1"
+              className="flex items-center rounded-full bg-zinc-100 p-1 border border-zinc-200/80 shadow-2xs"
             >
               {ROLE_ITEMS.map(({ role: r, icon: Icon, short }) => {
                 const active = role === r;
@@ -238,15 +221,17 @@ export default function RoleSwitcher() {
                     aria-checked={active}
                     title={ROLE_LABELS[r]}
                     onClick={() => requestRole(r)}
-                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-300 ${
+                    className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 min-h-[32px] ${
                       active
-                        ? `${ROLE_STYLES[r]} shadow-lg`
-                        : "text-zinc-500 hover:text-zinc-300 border-transparent"
+                        ? "bg-[#083701] text-white shadow-xs"
+                        : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/60"
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">{short}</span>
-                    {PROTECTED_ROLES.has(r) && !active && <Lock className="w-3 h-3 opacity-60" />}
+                    <span>{short}</span>
+                    {PROTECTED_ROLES.has(r) && !active && (
+                      <Lock className="w-3 h-3 opacity-60" />
+                    )}
                   </button>
                 );
               })}
@@ -256,7 +241,8 @@ export default function RoleSwitcher() {
               <button
                 onClick={logoutRole}
                 title={`Keluar dari mode ${ROLE_LABELS[role]}`}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-500/10 border border-white/[0.06] transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 border border-zinc-200 transition-colors"
+                aria-label="Logout peran"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>

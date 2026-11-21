@@ -14,6 +14,7 @@ import {
   Map,
   AlertCircle,
   HardHat,
+  ArrowRight,
 } from "lucide-react";
 import CitizenReportForm from "@/components/CitizenReportForm";
 import RoleSwitcher from "@/components/role/RoleSwitcher";
@@ -23,10 +24,10 @@ import { useRole, type Role } from "@/components/role/RoleContext";
 const PublicMap = dynamic(() => import("@/components/PublicMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-[480px] rounded-2xl border border-white/[0.07] bg-white/[0.02]">
+    <div className="flex items-center justify-center h-[480px] rounded-2xl border border-zinc-200 bg-zinc-50">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin" />
-        <span className="text-xs text-zinc-500">Memuat peta interaktif…</span>
+        <div className="w-8 h-8 border-2 border-[#083701]/30 border-t-[#083701] rounded-full animate-spin" />
+        <span className="text-xs text-zinc-500 font-medium">Memuat peta interaktif…</span>
       </div>
     </div>
   ),
@@ -35,81 +36,40 @@ const PublicMap = dynamic(() => import("@/components/PublicMap"), {
 /* ───────────────────────── Tab type ──────────────────────────────────── */
 type ActiveTab = "report" | "map";
 
-/* ───────────────────────── Animated Pulse Ring ───────────────────────── */
-function PulseRing({ delay = 0 }: { delay?: number }) {
-  return (
-    <span
-      className="absolute inset-0 rounded-full border border-emerald-500/30 animate-ping"
-      style={{ animationDelay: `${delay}ms`, animationDuration: "3s" }}
-    />
-  );
-}
-
-/* ───────────────────────── Floating Particle ─────────────────────────── */
-function FloatingParticle({ index }: { index: number }) {
-  const size = 2 + (index % 3);
-  const left = (index * 17.3) % 100;
-  const duration = 15 + (index % 10) * 2;
-  const delay = (index * 1.7) % 8;
-
-  return (
-    <span
-      className="absolute rounded-full bg-emerald-400/20 pointer-events-none"
-      style={{
-        width: size,
-        height: size,
-        left: `${left}%`,
-        bottom: "-10px",
-        animation: `floatUp ${duration}s ${delay}s linear infinite`,
-      }}
-    />
-  );
-}
-
 /* ─────────────────── Architecture Card ───────────────────────────────── */
 function ArchCard({
   icon: Icon,
   title,
   description,
-  gradient,
   index,
 }: {
   icon: React.ElementType;
   title: string;
   description: string;
-  gradient: string;
   index: number;
 }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 200 + index * 120);
+    const timer = setTimeout(() => setVisible(true), 120 + index * 80);
     return () => clearTimeout(timer);
   }, [index]);
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-xl p-6 transition-all duration-500 hover:border-emerald-500/30 hover:bg-white/[0.06] hover:shadow-lg hover:shadow-emerald-500/5 hover:-translate-y-1 ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+      className={`group rounded-2xl border border-[#DCE5DF] bg-white p-6 shadow-sm hover:shadow-md hover:border-[#083701]/40 transition-all duration-300 hover:-translate-y-1 ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       }`}
     >
-      <div
-        className={`absolute -inset-px rounded-2xl bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl`}
-      />
-
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:from-emerald-500/30 group-hover:to-teal-500/20 transition-colors duration-500">
-          <Icon className="w-5 h-5 text-emerald-400" />
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-white mb-1 tracking-wide">
-            {title}
-          </h3>
-          <p className="text-xs leading-relaxed text-zinc-400 group-hover:text-zinc-300 transition-colors">
-            {description}
-          </p>
-        </div>
+      <div className="w-12 h-12 rounded-xl bg-[#ECFAEB] border border-[#DCE5DF] flex items-center justify-center text-[#083701] mb-4 group-hover:scale-105 transition-transform">
+        <Icon className="w-6 h-6" />
       </div>
+      <h3 className="font-serif text-base font-bold text-zinc-900 mb-1.5 tracking-wide">
+        {title}
+      </h3>
+      <p className="text-xs leading-relaxed text-zinc-600 font-normal">
+        {description}
+      </p>
     </div>
   );
 }
@@ -117,12 +77,12 @@ function ArchCard({
 /* ─────────────────── Status Badge ────────────────────────────────────── */
 function StatusBadge() {
   return (
-    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm">
+    <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white border border-[#DCE5DF] shadow-xs">
       <span className="relative flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#083701] opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#083701]" />
       </span>
-      <span className="text-xs font-medium text-emerald-400 tracking-wider uppercase">
+      <span className="text-xs font-semibold text-[#083701] tracking-wider uppercase">
         Base Sepolia — On-Chain Audit Protocol Live
       </span>
     </div>
@@ -137,8 +97,8 @@ const ROLE_BANNERS: Record<
   contractor: {
     icon: HardHat,
     title: "Mode Kontraktor / Dinas (Terverifikasi)",
-    text: "Pilih pin merah di peta untuk menyelesaikan perbaikan dan menjalankan AI Spatial Matcher.",
-    className: "border-amber-500/20 bg-amber-500/[0.06] text-amber-300",
+    text: "Pilih pin merah di peta untuk menyelesaikan perbaikan dan menjalankan AI Spatial Matcher dengan verifikasi jarak GPS.",
+    className: "border-amber-200 bg-amber-50 text-amber-900",
   },
 };
 
@@ -146,11 +106,11 @@ function RoleBanner({ role }: { role: Role }) {
   if (role === "citizen") return null;
   const { icon: Icon, title, text, className } = ROLE_BANNERS[role];
   return (
-    <div className={`mt-4 flex items-start gap-3 rounded-2xl border p-3.5 ${className}`}>
+    <div className={`mt-4 flex items-start gap-3 rounded-2xl border p-4 shadow-xs ${className}`}>
       <Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
       <div>
-        <p className="text-xs font-semibold">{title}</p>
-        <p className="text-[11px] text-zinc-400 leading-relaxed mt-0.5">{text}</p>
+        <p className="text-xs font-bold tracking-wide">{title}</p>
+        <p className="text-[11px] text-zinc-700 leading-relaxed mt-0.5 font-normal">{text}</p>
       </div>
     </div>
   );
@@ -174,48 +134,50 @@ export default function HomePage() {
   const canReport = role === "citizen";
   const currentTab: ActiveTab = canReport ? activeTab : "map";
 
+  const handleHeroAction = (tab: ActiveTab) => {
+    setActiveTab(tab);
+    const el = document.getElementById("action-panel");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const architectureItems = [
     {
       icon: Brain,
       title: "AI Damage Analysis",
       description:
-        "Gemini Vision AI evaluates road damage imagery, assigns severity scores, and generates structured inspection reports in real-time.",
-      gradient: "from-violet-600/20 via-transparent to-transparent",
+        "Gemini Vision AI mengevaluasi citra kerusakan jalan, menghitung severity score (1-100), dan menerbitkan laporan inspeksi terstruktur secara instan.",
     },
     {
       icon: Link2,
       title: "On-Chain Attestation",
       description:
-        "Every verified report is permanently attested via EAS (Ethereum Attestation Service) on Base Sepolia for tamper-proof accountability.",
-      gradient: "from-blue-600/20 via-transparent to-transparent",
+        "Setiap laporan tervalidasi diatestasi secara permanen melalui EAS (Ethereum Attestation Service) di Base Sepolia untuk akuntabilitas tanpa manipulasi.",
     },
     {
       icon: MapPin,
       title: "Geospatial Mapping",
       description:
-        "Interactive Leaflet maps with real-time clustering provide a city-wide view of road conditions and damage hotspots.",
-      gradient: "from-amber-600/20 via-transparent to-transparent",
+        "Peta interaktif Leaflet dengan algoritma penanganan pin bertumpuk memberikan visualisasi sebaran kondisi jalan secara presisi.",
     },
     {
       icon: Database,
       title: "Supabase Backend",
       description:
-        "PostgreSQL-backed data layer with Row Level Security, real-time subscriptions, and instant REST API for all report operations.",
-      gradient: "from-emerald-600/20 via-transparent to-transparent",
+        "Lapisan data berbasis PostgreSQL dengan Row Level Security, penyimpanan foto terisolasi, dan REST API cepat untuk seluruh operasi pelaporan.",
     },
     {
       icon: Globe,
       title: "Decentralized Protocol",
       description:
-        "Citizen-driven audit system where anyone can submit, verify, and track road damage reports without centralized gatekeeping.",
-      gradient: "from-cyan-600/20 via-transparent to-transparent",
+        "Sistem audit publik berbasis partisipasi warga di mana siapa pun dapat melaporkan, memverifikasi, dan menelusuri status jalan tanpa perantara.",
     },
     {
       icon: Zap,
       title: "Next.js + TypeScript",
       description:
-        "Server-side rendering, App Router architecture, and edge-optimized API routes for blazing-fast performance and type safety.",
-      gradient: "from-rose-600/20 via-transparent to-transparent",
+        "Arsitektur App Router dengan Turbopack dan API edge yang dioptimasi untuk kinerja kilat, keamanan tipe data, dan tampilan responsif.",
     },
   ];
 
@@ -233,221 +195,175 @@ export default function HomePage() {
 
   return (
     <>
-    <RoleSwitcher />
-    <main className="relative flex-1 flex flex-col overflow-hidden bg-[#09090b]">
-      {/* ── Background Effects ── */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)" }}
-        />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(20,184,166,0.05) 0%, transparent 70%)" }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
-        {Array.from({ length: 20 }).map((_, i) => (
-          <FloatingParticle key={i} index={i} />
-        ))}
-      </div>
+      <RoleSwitcher />
+      <main className="relative flex-1 flex flex-col bg-[#F8FAF9] text-zinc-900">
+        <div className="relative z-10 flex-1 flex flex-col items-center px-4 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-6xl mx-auto w-full">
 
-      {/* ── Content ── */}
-      <div className="relative z-10 flex-1 flex flex-col items-center px-4 sm:px-6 py-16 sm:py-20">
-
-        {/* ─ Hero ─ */}
-        <div
-          className={`text-center max-w-3xl mx-auto transition-all duration-1000 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
-          <div className="relative inline-flex items-center justify-center mb-8">
-            <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl shadow-emerald-500/25">
-              <Shield className="w-10 h-10 text-white" />
-              <PulseRing delay={0} />
-              <PulseRing delay={1000} />
-              <PulseRing delay={2000} />
-            </div>
-          </div>
-
-          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-4">
-            <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-              Civic
-            </span>
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              Plus
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-zinc-400 mb-3 font-light tracking-wide">
-            AI-Powered Road Damage Audit Protocol
-          </p>
-
-          <p className="text-sm text-zinc-500 max-w-xl mx-auto mb-8 leading-relaxed">
-            Protokol civic-tech terdesentralisasi yang menggabungkan analisis
-            AI Vision dengan atestasi blockchain untuk audit kerusakan jalan
-            publik yang transparan dan anti-manipulasi.
-          </p>
-
-          <StatusBadge />
-        </div>
-
-        {/* ─── Tab Switcher ─── */}
-        <div
-          className={`w-full max-w-xl mx-auto mt-14 transition-all duration-700 delay-200 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          <div className="flex items-center rounded-2xl bg-white/[0.03] border border-white/[0.06] p-1.5 backdrop-blur-xl">
-            {canReport && (
-            <button
-              id="tab-report"
-              onClick={() => setActiveTab("report")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
-                currentTab === "report"
-                  ? "bg-gradient-to-r from-emerald-500/20 to-teal-500/15 text-emerald-400 border border-emerald-500/25 shadow-lg shadow-emerald-500/10"
-                  : "text-zinc-500 hover:text-zinc-300 border border-transparent"
-              }`}
-            >
-              <AlertCircle className="w-4 h-4" />
-              <span>Laporkan Kerusakan</span>
-            </button>
-            )}
-            <button
-              id="tab-map"
-              onClick={() => setActiveTab("map")}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
-                currentTab === "map"
-                  ? "bg-gradient-to-r from-emerald-500/20 to-teal-500/15 text-emerald-400 border border-emerald-500/25 shadow-lg shadow-emerald-500/10"
-                  : "text-zinc-500 hover:text-zinc-300 border border-transparent"
-              }`}
-            >
-              <Map className="w-4 h-4" />
-              <span>Peta Sebaran Publik</span>
-            </button>
-          </div>
-
-          <RoleBanner role={role} />
-        </div>
-
-        {/* ─── Tab Content ─── */}
-        <div
-          className={`w-full max-w-xl mx-auto mt-6 transition-all duration-700 delay-300 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          {currentTab === "report" && (
-            <div className="animate-in fade-in duration-500">
-              {/* Card header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/25 to-teal-500/15 border border-emerald-500/25 flex items-center justify-center">
-                  <FileSearch className="w-4 h-4 text-emerald-400" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold text-white tracking-wide">
-                    Laporkan Kerusakan Jalan
-                  </h2>
-                  <p className="text-xs text-zinc-500">
-                    Ambil foto · Deteksi GPS · Verifikasi AI
-                  </p>
-                </div>
-              </div>
-
-              {/* Glass card */}
-              <div className="rounded-3xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-2xl p-5 shadow-2xl shadow-black/50">
-                <CitizenReportForm />
-              </div>
-            </div>
-          )}
-
-          {currentTab === "map" && (
-            <div className="animate-in fade-in duration-500">
-              {/* Card header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/25 to-teal-500/15 border border-emerald-500/25 flex items-center justify-center">
-                  <Map className="w-4 h-4 text-emerald-400" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold text-white tracking-wide">
-                    Peta Sebaran Kerusakan Jalan
-                  </h2>
-                  <p className="text-xs text-zinc-500">
-                    Visualisasi real-time semua laporan publik
-                  </p>
-                </div>
-              </div>
-
-              {/* Glass card */}
-              <div className="rounded-3xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-2xl p-5 shadow-2xl shadow-black/50">
-                <PublicMap />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ─ Architecture Grid ─ */}
-        <div className="w-full max-w-5xl mx-auto mt-24">
-          <div
-            className={`text-center mb-10 transition-all duration-700 delay-500 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          {/* ═══════════════ Hero Banner Utama (Hijau Gelap Pekat) ═══════════════ */}
+          <section
+            className={`w-full rounded-3xl sm:rounded-[36px] bg-gradient-to-br from-[#083701] via-[#052602] to-[#0A0C12] text-white p-7 sm:p-12 lg:p-14 shadow-2xl relative overflow-hidden border border-[#0d5004]/30 transition-all duration-1000 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
           >
-            <h2 className="text-sm font-semibold text-emerald-400/80 tracking-[0.2em] uppercase mb-2">
-              System Architecture
-            </h2>
-            <p className="text-zinc-500 text-sm">
-              Six interconnected modules powering the CivicPlus protocol
-            </p>
+            {/* Ambient subtle glow overlay */}
+            <div className="absolute top-0 right-1/4 w-[400px] h-[300px] bg-[#98FE67]/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="relative z-10 max-w-3xl">
+              {/* Badge kecil uppercase di atas judul */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#98FE67]/15 border border-[#98FE67]/30 text-[#98FE67] text-[11px] font-bold tracking-[0.18em] uppercase mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#98FE67]" />
+                <span>Protokol Audit Kerusakan Jalan Terdesentralisasi</span>
+              </div>
+
+              {/* Judul utama besar ber-hierarki */}
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+                Audit Kerusakan Jalan.{" "}
+                <span className="font-serif italic font-normal text-[#98FE67] block mt-1 sm:mt-2">
+                  Transparan &amp; Abadi.
+                </span>
+              </h1>
+
+              {/* Deskripsi singkat 2–3 baris */}
+              <p className="text-zinc-300 text-sm sm:text-base font-light max-w-2xl leading-relaxed mt-4 mb-8">
+                Protokol civic-tech terdesentralisasi yang menggabungkan analisis
+                AI Vision dengan atestasi blockchain untuk audit kerusakan jalan
+                publik yang transparan dan anti-manipulasi.
+              </p>
+
+              {/* Dua tombol aksi sejajar */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button
+                  onClick={() => handleHeroAction("report")}
+                  className="bg-[#98FE67] hover:bg-[#85f352] text-[#083701] font-bold px-6 py-3.5 rounded-full shadow-lg shadow-[#98FE67]/25 flex items-center justify-center gap-2 text-xs sm:text-sm tracking-wider uppercase transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <span>Laporkan Kerusakan</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => handleHeroAction("map")}
+                  className="bg-white/10 hover:bg-white/15 text-white border border-white/20 font-semibold px-6 py-3.5 rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm tracking-wider uppercase transition-all backdrop-blur-xs hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <span>Jelajahi Peta Publik</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* ═══════════════ Pill Tengah: Base Sepolia Live ═══════════════ */}
+          <div className="mt-8 mb-6 text-center">
+            <StatusBadge />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {architectureItems.map((item, i) => (
-              <ArchCard key={item.title} {...item} index={i} />
-            ))}
+          {/* ═══════════════ Tab Switcher Utama & Action Panel ═══════════════ */}
+          <div id="action-panel" className="w-full max-w-md mx-auto mb-8 scroll-mt-24">
+            <div className="flex flex-col sm:flex-row items-center rounded-2xl sm:rounded-full bg-zinc-100 p-1.5 border border-zinc-200/80 shadow-inner gap-1.5 w-full">
+              {canReport && (
+                <button
+                  id="tab-report"
+                  onClick={() => setActiveTab("report")}
+                  className={`w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 min-h-[42px] ${
+                    currentTab === "report"
+                      ? "bg-[#083701] text-white shadow-md shadow-[#083701]/20"
+                      : "text-zinc-600 hover:text-zinc-900"
+                  }`}
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  <span>Laporkan Kerusakan</span>
+                </button>
+              )}
+              <button
+                id="tab-map"
+                onClick={() => setActiveTab("map")}
+                className={`w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 min-h-[42px] ${
+                  currentTab === "map"
+                    ? "bg-[#083701] text-white shadow-md shadow-[#083701]/20"
+                    : "text-zinc-600 hover:text-zinc-900"
+                }`}
+              >
+                <Map className="w-4 h-4" />
+                <span>Peta Sebaran Publik</span>
+              </button>
+            </div>
+
+            <RoleBanner role={role} />
           </div>
-        </div>
 
-        {/* ─ Tech Stack Pills ─ */}
-        <div
-          className={`mt-16 mb-8 flex flex-wrap justify-center gap-2 max-w-2xl transition-all duration-700 delay-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          {techStack.map((tech) => (
-            <span
-              key={tech}
-              className="px-3 py-1 text-[11px] font-medium rounded-full bg-white/[0.04] border border-white/[0.06] text-zinc-400 tracking-wider hover:border-emerald-500/30 hover:text-emerald-400 transition-colors duration-300 cursor-default"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
+          {/* ═══════════════ Tab Content (Form & Peta) ═══════════════ */}
+          <div className="w-full max-w-2xl mx-auto mb-16">
+            {currentTab === "report" && (
+              <div className="rounded-3xl border border-[#DCE5DF] bg-white p-6 sm:p-8 shadow-xl shadow-zinc-900/5 animate-in fade-in duration-300">
+                {/* Header Kartu */}
+                <div className="mb-6 pb-5 border-b border-zinc-100">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+                    Laporkan Kerusakan Jalan
+                  </h2>
+                  <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light">
+                    Ambil foto fisik · Deteksi GPS otomatis · Verifikasi AI instan
+                  </p>
+                </div>
 
-      {/* ── Float-up animation keyframe ── */}
-      <style jsx>{`
-        @keyframes floatUp {
-          0% {
-            transform: translateY(0) scale(1);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.6;
-          }
-          90% {
-            opacity: 0.1;
-          }
-          100% {
-            transform: translateY(-100vh) scale(0.5);
-            opacity: 0;
-          }
-        }
-      `}</style>
-    </main>
+                <CitizenReportForm />
+              </div>
+            )}
+
+            {currentTab === "map" && (
+              <div className="rounded-3xl border border-[#DCE5DF] bg-white p-6 sm:p-8 shadow-xl shadow-zinc-900/5 animate-in fade-in duration-300">
+                {/* Header Kartu */}
+                <div className="mb-6 pb-5 border-b border-zinc-100">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900 tracking-tight">
+                    Peta Sebaran Kerusakan Jalan
+                  </h2>
+                  <p className="text-xs sm:text-sm text-zinc-500 mt-1 font-light">
+                    Visualisasi geospatial real-time seluruh laporan publik
+                  </p>
+                </div>
+
+                <PublicMap />
+              </div>
+            )}
+          </div>
+
+          {/* ═══════════════ Bagian Arsitektur Sistem CivicPlus ═══════════════ */}
+          <div className="w-full max-w-5xl mx-auto mt-12 sm:mt-16">
+            <div className="text-center mb-10">
+              <div className="text-xs font-bold text-[#083701] tracking-[0.2em] uppercase mb-2">
+                Protokol &amp; Arsitektur
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-3">
+                Arsitektur Sistem CivicPlus
+              </h2>
+              <p className="text-zinc-600 text-sm max-w-xl mx-auto font-light leading-relaxed">
+                Enam pilar terdesentralisasi yang saling terhubung untuk menjamin transparansi, verifikasi otomatis, dan keabadian data audit.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {architectureItems.map((item, i) => (
+                <ArchCard key={item.title} {...item} index={i} />
+              ))}
+            </div>
+
+            {/* Deretan Badge Teknologi */}
+            <div className="mt-14 mb-8 sm:mb-12 text-center">
+              <div className="text-xs font-bold text-zinc-400 tracking-[0.2em] uppercase mb-4">
+                Didukung Teknologi Modern
+              </div>
+              <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+                {techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-4 py-1.5 text-xs font-medium rounded-full bg-white border border-[#DCE5DF] text-zinc-700 tracking-wide shadow-2xs"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
     </>
   );
 }

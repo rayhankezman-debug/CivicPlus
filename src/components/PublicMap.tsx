@@ -207,8 +207,8 @@ function AuditImage({ src, alt, emptyText }: { src?: string | null; alt: string;
     height: 110,
     borderRadius: 8,
     overflow: "hidden",
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.06)",
+    background: "#F8FAF9",
+    border: "1px solid #E2E8F0",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -237,7 +237,7 @@ function AuditImage({ src, alt, emptyText }: { src?: string | null; alt: string;
 
 /** Side-by-side Before / After comparison shown on RESOLVED reports. */
 function BeforeAfterPanel({ report }: { report: Report }) {
-  const label = (text: string, color: string, bg: string): React.ReactNode => (
+  const label = (text: string, color: string, bg: string, border: string): React.ReactNode => (
     <span
       style={{
         display: "inline-block",
@@ -250,6 +250,7 @@ function BeforeAfterPanel({ report }: { report: Report }) {
         textTransform: "uppercase",
         color,
         background: bg,
+        border: `1px solid ${border}`,
       }}
     >
       {text}
@@ -268,16 +269,16 @@ function BeforeAfterPanel({ report }: { report: Report }) {
 
   return (
     <div style={{ padding: "12px 14px 0" }}>
-      <div style={{ fontSize: 10, color: "#38bdf8", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
+      <div style={{ fontSize: 10, color: "#083701", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8, display: "flex", alignItems: "center", gap: 5 }}>
         👁 Audit Transparansi
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
         <div>
-          {label("Sebelum", "#f87171", "rgba(239,68,68,0.15)")}
+          {label("Sebelum", "#dc2626", "#fef2f2", "#fecaca")}
           <AuditImage src={report.image_url} alt="Sebelum perbaikan" emptyText="Foto tidak tersedia" />
         </div>
         <div>
-          {label("Sesudah", "#4ade80", "rgba(34,197,94,0.15)")}
+          {label("Sesudah", "#083701", "#ECFAEB", "#DCE5DF")}
           <AuditImage
             src={report.status === "RESOLVED" ? report.repair_image_url : null}
             alt="Setelah perbaikan"
@@ -285,13 +286,13 @@ function BeforeAfterPanel({ report }: { report: Report }) {
           />
         </div>
       </div>
-      <div style={{ fontSize: 10, color: "#71717a", marginTop: 6, lineHeight: 1.7 }}>
-        <div>Severity awal: <strong style={{ color: "#e4e4e7" }}>{report.severity_score}</strong></div>
+      <div style={{ fontSize: 10, color: "#52525b", marginTop: 6, lineHeight: 1.7 }}>
+        <div>Severity awal: <strong style={{ color: "#18181b" }}>{report.severity_score}</strong></div>
         {resolvedAt && (
-          <div>✅ Selesai diperbaiki: <strong style={{ color: "#4ade80" }}>{resolvedAt}</strong></div>
+          <div>✅ Selesai diperbaiki: <strong style={{ color: "#083701" }}>{resolvedAt}</strong></div>
         )}
         {!resolvedAt && report.status === "RESOLVED" && (
-          <div style={{ color: "#52525b" }}>✅ Waktu penyelesaian belum tercatat</div>
+          <div style={{ color: "#71717a" }}>✅ Waktu penyelesaian belum tercatat</div>
         )}
       </div>
     </div>
@@ -313,6 +314,7 @@ const linkStyle = (color: string, bg: string, border: string): React.CSSProperti
   textDecoration: "none",
   width: "100%",
   marginBottom: 8,
+  boxSizing: "border-box",
 });
 
 /** A real EVM tx hash: `0x` + 64 hex chars. Anything else (null, "", legacy
@@ -349,9 +351,9 @@ function ExplorerLinks({ report }: { report: Report }) {
         target="_blank"
         rel="noopener noreferrer"
         style={linkStyle(
-          "#34d399",
-          "linear-gradient(135deg, rgba(16,185,129,0.15), rgba(20,184,166,0.15))",
-          "rgba(16,185,129,0.25)"
+          "#083701",
+          "#ECFAEB",
+          "#DCE5DF"
         )}
       >
         🔗 Lihat Attestation di EAS Scan
@@ -364,9 +366,9 @@ function ExplorerLinks({ report }: { report: Report }) {
           rel="noopener noreferrer"
           title="Lihat transaksi on-chain di BaseScan"
           style={linkStyle(
-            "#60a5fa",
-            "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.15))",
-            "rgba(59,130,246,0.25)"
+            "#083701",
+            "#F8FAF9",
+            "#DCE5DF"
           )}
         >
           ⛓ Lihat Transaksi di BaseScan
@@ -596,30 +598,31 @@ function ContractorModal({
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-zinc-900/60 backdrop-blur-xs"
         onClick={() => { stopCamera(); onClose(); }}
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-white/[0.08] bg-zinc-900/95 backdrop-blur-2xl shadow-2xl shadow-black/60">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[32px] border border-[#DCE5DF] bg-white shadow-2xl shadow-zinc-900/15">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-5 pb-4 border-b border-white/[0.06] bg-zinc-900/95 backdrop-blur-xl rounded-t-3xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-5 pb-4 border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md rounded-t-[32px]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/25 to-orange-500/15 border border-amber-500/25 flex items-center justify-center">
-              <Wrench className="w-5 h-5 text-amber-400" />
+            <div className="w-10 h-10 rounded-2xl bg-[#ECFAEB] border border-[#DCE5DF] flex items-center justify-center text-[#083701] shadow-2xs">
+              <Wrench className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white tracking-wide">
+              <h3 className="font-serif text-base font-bold text-zinc-900 tracking-tight">
                 Portal Resolusi Kontraktor
               </h3>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-zinc-500 font-light">
                 Verifikasi AI Sebelum / Sesudah
               </p>
             </div>
           </div>
           <button
             onClick={() => { stopCamera(); onClose(); }}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
+            aria-label="Tutup"
           >
             <X className="w-4 h-4" />
           </button>
@@ -627,39 +630,39 @@ function ContractorModal({
 
         <div className="p-5 space-y-5">
           {/* ── GPS Location Status ── */}
-          <div className={`flex items-start gap-2.5 rounded-xl p-3 text-xs ${
+          <div className={`flex items-start gap-2.5 rounded-xl p-3 text-xs leading-relaxed ${
             gpsStatus === "ok"
-              ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+              ? "bg-[#ECFAEB] border border-[#DCE5DF] text-[#083701]"
               : gpsStatus === "acquiring"
-              ? "bg-sky-500/10 border border-sky-500/20 text-sky-400"
-              : "bg-amber-500/10 border border-amber-500/20 text-amber-400"
+              ? "bg-sky-50 border border-sky-200 text-sky-800"
+              : "bg-amber-50 border border-amber-200 text-amber-900"
           }`}>
             {gpsStatus === "acquiring" ? (
-              <Loader2 className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 animate-spin text-sky-600" />
             ) : gpsStatus === "ok" ? (
-              <Navigation className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+              <Navigation className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-[#083701]" />
             ) : (
-              <AlertTriangle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+              <AlertTriangle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-amber-600" />
             )}
             <div className="leading-relaxed">
               {gpsStatus === "pending" && "Mendeteksi lokasi GPS perangkat…"}
               {gpsStatus === "acquiring" && "Mengambil koordinat GPS perangkat Anda…"}
               {gpsStatus === "ok" && gpsCoords && (
                 <>
-                  📍 Lokasi terdeteksi: {gpsCoords.latitude.toFixed(5)}, {gpsCoords.longitude.toFixed(5)}
+                  📍 Lokasi terdeteksi: <strong className="font-semibold text-zinc-900">{gpsCoords.latitude.toFixed(5)}, {gpsCoords.longitude.toFixed(5)}</strong>
                   {" "}(±{Math.round(gpsCoords.accuracy)} m) —{" "}
-                  <span className="font-semibold">validasi jarak akan dilakukan server</span>
+                  <span className="font-semibold text-zinc-900">validasi jarak akan dilakukan server</span>
                 </>
               )}
               {gpsStatus === "denied" && (
                 <>
-                  <span className="font-semibold">Izin GPS ditolak.</span> Verifikasi akan dilanjutkan tanpa validasi lokasi otomatis.
+                  <strong className="font-semibold text-zinc-900">Izin GPS ditolak.</strong> Verifikasi akan dilanjutkan tanpa validasi lokasi otomatis.
                   Pastikan Anda benar-benar berada di titik perbaikan jalan yang dilaporkan.
                 </>
               )}
               {gpsStatus === "unavailable" && (
                 <>
-                  <span className="font-semibold">GPS tidak tersedia.</span> Verifikasi akan dilanjutkan tanpa validasi lokasi otomatis.
+                  <strong className="font-semibold text-zinc-900">GPS tidak tersedia.</strong> Verifikasi akan dilanjutkan tanpa validasi lokasi otomatis.
                   Pastikan Anda benar-benar berada di titik perbaikan jalan yang dilaporkan.
                 </>
               )}
@@ -669,14 +672,14 @@ function ContractorModal({
           {/* ── Before image (original damage) ── */}
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-500/15 text-red-400 border border-red-500/25">
+              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200">
                 Sebelum
               </span>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-zinc-500 font-light">
                 Foto kerusakan awal
               </span>
             </div>
-            <div className="rounded-2xl overflow-hidden border border-white/[0.06]">
+            <div className="rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 shadow-2xs">
               <img
                 src={report.image_url}
                 alt="Kerusakan awal"
@@ -684,25 +687,25 @@ function ContractorModal({
               />
             </div>
             <div className="mt-2 flex items-center gap-2 text-[11px] text-zinc-500">
-              <span>📍 {report.latitude.toFixed(5)}, {report.longitude.toFixed(5)}</span>
+              <span>📍 <strong className="text-zinc-700 font-medium">{report.latitude.toFixed(5)}, {report.longitude.toFixed(5)}</strong></span>
               <span>·</span>
-              <span>Severity: {report.severity_score}</span>
+              <span>Severity: <strong className="text-zinc-700 font-medium">{report.severity_score}</strong></span>
             </div>
           </div>
 
           {/* ── After image (repair photo) ── */}
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#ECFAEB] text-[#083701] border border-[#DCE5DF]">
                 Sesudah
               </span>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-zinc-500 font-light">
                 Foto hasil perbaikan
               </span>
             </div>
 
             {repairImage ? (
-              <div className="relative rounded-2xl overflow-hidden border border-white/[0.06]">
+              <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-50 shadow-2xs">
                 <img
                   src={repairImage}
                   alt="Hasil perbaikan"
@@ -713,13 +716,13 @@ function ContractorModal({
                     setRepairImage(null);
                     setResult(null);
                   }}
-                  className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                  className="absolute top-2 right-2 w-7 h-7 rounded-full bg-zinc-900/70 backdrop-blur-xs flex items-center justify-center text-white hover:bg-zinc-900 transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : cameraActive ? (
-              <div className="relative rounded-2xl overflow-hidden border border-white/[0.06]">
+              <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-900 shadow-2xs">
                 <video
                   ref={videoRef}
                   className="w-full h-44 object-cover"
@@ -730,40 +733,42 @@ function ContractorModal({
                 <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-3">
                   <button
                     onClick={capturePhoto}
-                    className="w-14 h-14 rounded-full bg-white border-4 border-white/30 shadow-lg hover:scale-105 transition-transform"
+                    className="w-14 h-14 rounded-full bg-white border-4 border-white/40 shadow-lg hover:scale-105 transition-transform"
                   />
                   <button
                     onClick={stopCamera}
-                    className="w-10 h-10 rounded-full bg-red-500/80 flex items-center justify-center text-white"
+                    className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white shadow-md hover:bg-red-700 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] p-8">
+              <div className="rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/70 p-7 hover:border-[#DCE5DF] transition-colors">
                 {isCompressing ? (
                   <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-                    <span className="text-xs text-zinc-400">Mengompres gambar…</span>
+                    <Loader2 className="w-8 h-8 text-[#083701] animate-spin" />
+                    <span className="text-xs text-zinc-500">Mengompres gambar…</span>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-4">
-                    <ImageIcon className="w-10 h-10 text-zinc-600" />
-                    <p className="text-xs text-zinc-500 text-center">
-                      Unggah atau ambil foto lokasi <strong>setelah perbaikan</strong>
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-400">
+                      <ImageIcon className="w-6 h-6" />
+                    </div>
+                    <p className="text-xs text-zinc-600 text-center">
+                      Unggah atau ambil foto lokasi <strong className="text-zinc-900 font-semibold">setelah perbaikan</strong>
                     </p>
                     <div className="flex items-center gap-3">
                       <button
                         onClick={startCamera}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#ECFAEB] text-[#083701] border border-[#DCE5DF] hover:bg-[#d9f5d7] transition-all shadow-2xs"
                       >
                         <Camera className="w-4 h-4" />
                         Kamera
                       </button>
                       <button
                         onClick={() => { setError(null); fileInputRef.current?.click(); }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-white/[0.04] text-zinc-300 border border-white/[0.08] hover:bg-white/[0.08] transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-100 transition-all shadow-2xs"
                       >
                         <Upload className="w-4 h-4" />
                         Unggah File
@@ -793,8 +798,8 @@ function ContractorModal({
 
           {/* ── Error display ── */}
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
-              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 text-red-600" />
               <span>{error}</span>
             </div>
           )}
@@ -804,17 +809,17 @@ function ContractorModal({
             <button
               onClick={handleVerify}
               disabled={isVerifying}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-[#083701] text-white hover:bg-[#0c4e03] shadow-md shadow-[#083701]/20 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.99] min-h-[48px]"
             >
               {isVerifying ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  AI sedang menganalisis…
+                  <Loader2 className="w-4 h-4 animate-spin text-[#98FE67]" />
+                  <span>AI sedang menganalisis…</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4" />
-                  Verifikasi Perbaikan dengan AI
+                  <Sparkles className="w-4 h-4 text-[#98FE67]" />
+                  <span>Verifikasi Perbaikan dengan AI</span>
                 </>
               )}
             </button>
@@ -825,32 +830,32 @@ function ContractorModal({
             <div
               className={`rounded-2xl border p-5 space-y-4 ${
                 result.isResolved
-                  ? "bg-emerald-500/5 border-emerald-500/20"
-                  : "bg-red-500/5 border-red-500/20"
+                  ? "bg-[#ECFAEB]/60 border-[#DCE5DF]"
+                  : "bg-red-50/70 border-red-200"
               }`}
             >
               {/* Header */}
               <div className="flex items-center gap-3">
                 {result.isResolved ? (
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
-                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                  <div className="w-11 h-11 rounded-2xl bg-[#ECFAEB] border border-[#DCE5DF] flex items-center justify-center shadow-2xs">
+                    <ShieldCheck className="w-6 h-6 text-[#083701]" />
                   </div>
                 ) : (
-                  <div className="w-12 h-12 rounded-2xl bg-red-500/20 flex items-center justify-center">
-                    <XCircle className="w-6 h-6 text-red-400" />
+                  <div className="w-11 h-11 rounded-2xl bg-red-100 border border-red-200 flex items-center justify-center shadow-2xs">
+                    <XCircle className="w-6 h-6 text-red-600" />
                   </div>
                 )}
                 <div>
                   <h4
                     className={`text-sm font-bold ${
-                      result.isResolved ? "text-emerald-400" : "text-red-400"
+                      result.isResolved ? "text-[#083701]" : "text-red-700"
                     }`}
                   >
                     {result.isResolved
                       ? "✅ Perbaikan Terverifikasi!"
                       : "❌ Perbaikan Belum Valid"}
                   </h4>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-zinc-500 font-light mt-0.5">
                     {result.isResolved
                       ? "Status laporan diperbarui menjadi RESOLVED"
                       : "Silakan cek kembali lokasi dan kualitas perbaikan"}
@@ -860,33 +865,33 @@ function ContractorModal({
 
               {/* Scores */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">
+                <div className="rounded-xl bg-white border border-zinc-200 p-3 shadow-2xs">
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1">
                     Kecocokan Spasial
                   </div>
                   <div
                     className={`text-xl font-bold ${
                       result.spatialMatchConfidence >= 0.7
-                        ? "text-emerald-400"
+                        ? "text-[#083701]"
                         : result.spatialMatchConfidence >= 0.5
-                        ? "text-amber-400"
-                        : "text-red-400"
+                        ? "text-amber-700"
+                        : "text-red-700"
                     }`}
                   >
                     {Math.round(result.spatialMatchConfidence * 100)}%
                   </div>
                 </div>
-                <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">
+                <div className="rounded-xl bg-white border border-zinc-200 p-3 shadow-2xs">
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1">
                     Kualitas Perbaikan
                   </div>
                   <div
                     className={`text-xl font-bold ${
                       result.workQualityScore >= 70
-                        ? "text-emerald-400"
+                        ? "text-[#083701]"
                         : result.workQualityScore >= 50
-                        ? "text-amber-400"
-                        : "text-red-400"
+                        ? "text-amber-700"
+                        : "text-red-700"
                     }`}
                   >
                     {result.workQualityScore}/100
@@ -895,11 +900,11 @@ function ContractorModal({
               </div>
 
               {/* Reason */}
-              <div className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-3">
-                <div className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">
+              <div className="rounded-xl bg-white border border-zinc-200 p-3 shadow-2xs">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-1">
                   Analisis AI
                 </div>
-                <p className="text-xs text-zinc-300 leading-relaxed">
+                <p className="text-xs text-zinc-700 leading-relaxed font-normal">
                   {result.reason}
                 </p>
               </div>
@@ -908,10 +913,10 @@ function ContractorModal({
               {result.isResolved && (
                 <button
                   onClick={onClose}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-[#083701] text-white hover:bg-[#0c4e03] shadow-md shadow-[#083701]/20 transition-colors"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
-                  Tutup & Kembali ke Peta
+                  <CheckCircle2 className="w-4 h-4 text-[#98FE67]" />
+                  <span>Tutup & Kembali ke Peta</span>
                 </button>
               )}
 
@@ -923,10 +928,10 @@ function ContractorModal({
                     setResult(null);
                     setError(null);
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-semibold bg-white text-zinc-800 border border-zinc-300 hover:bg-zinc-50 shadow-2xs transition-colors"
                 >
-                  <Camera className="w-4 h-4" />
-                  Ambil Ulang Foto Perbaikan
+                  <Camera className="w-4 h-4 text-zinc-600" />
+                  <span>Ambil Ulang Foto Perbaikan</span>
                 </button>
               )}
             </div>
@@ -989,8 +994,8 @@ export default function PublicMap() {
       {/* Header bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs text-zinc-400">
+          <MapPin className="w-4 h-4 text-[#083701]" />
+          <span className="text-xs text-zinc-600 font-medium">
             {loading
               ? "Memuat laporan…"
               : `${reports.length} laporan ditemukan`}
@@ -999,7 +1004,7 @@ export default function PublicMap() {
         <button
           onClick={fetchReports}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-emerald-400 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#083701] rounded-full bg-[#ECFAEB] border border-[#DCE5DF] hover:bg-[#d9f5d7] transition-all disabled:opacity-50"
         >
           <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
           Refresh
@@ -1008,19 +1013,19 @@ export default function PublicMap() {
 
       {/* Error state */}
       {error && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Map container */}
-      <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] shadow-2xl shadow-black/50" style={{ height: 480 }}>
+      <div className="relative rounded-2xl overflow-hidden border border-[#DCE5DF] shadow-md" style={{ height: 480 }}>
         {loading && reports.length === 0 && (
-          <div className="absolute inset-0 z-[999] flex items-center justify-center bg-zinc-900/80 backdrop-blur-sm">
+          <div className="absolute inset-0 z-[999] flex items-center justify-center bg-white/85 backdrop-blur-xs">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
-              <span className="text-xs text-zinc-400">Memuat peta…</span>
+              <Loader2 className="w-8 h-8 text-[#083701] animate-spin" />
+              <span className="text-xs text-zinc-600 font-medium">Memuat peta sebaran…</span>
             </div>
           </div>
         )}
@@ -1030,7 +1035,7 @@ export default function PublicMap() {
           zoom={12}
           scrollWheelZoom={true}
           className="h-full w-full"
-          style={{ height: "100%", width: "100%", background: "#09090b" }}
+          style={{ height: "100%", width: "100%", background: "#f4f4f5" }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -1056,11 +1061,13 @@ export default function PublicMap() {
                 <div
                   style={{
                     fontFamily: "Inter, system-ui, sans-serif",
-                    background: "#18181b",
-                    color: "#e4e4e7",
-                    borderRadius: "12px",
+                    background: "#FFFFFF",
+                    color: "#18181B",
+                    borderRadius: "18px",
                     overflow: "hidden",
-                    minWidth: 250,
+                    minWidth: 260,
+                    border: "1px solid #DCE5DF",
+                    boxShadow: "0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)",
                   }}
                 >
                   {/* Nearby reports indicator */}
@@ -1070,9 +1077,9 @@ export default function PublicMap() {
                         padding: "6px 14px",
                         fontSize: 11,
                         fontWeight: 600,
-                        background: "rgba(99,102,241,0.12)",
-                        color: "#818cf8",
-                        borderBottom: "1px solid rgba(99,102,241,0.15)",
+                        background: "#ECFAEB",
+                        color: "#083701",
+                        borderBottom: "1px solid #DCE5DF",
                         display: "flex",
                         alignItems: "center",
                         gap: 5,
@@ -1088,7 +1095,7 @@ export default function PublicMap() {
 
                   {/* Damage image — shown when no Before/After panel */}
                   {report.status !== "RESOLVED" && report.image_url && (
-                    <div style={{ position: "relative", width: "100%", height: 160, overflow: "hidden" }}>
+                    <div style={{ position: "relative", width: "100%", height: 160, overflow: "hidden", background: "#F8FAF9" }}>
                       <img
                         src={report.image_url}
                         alt="Kerusakan jalan"
@@ -1111,12 +1118,13 @@ export default function PublicMap() {
                           fontWeight: 700,
                           background:
                             report.severity_score >= 70
-                              ? "rgba(239,68,68,0.9)"
+                              ? "rgba(220,38,38,0.92)"
                               : report.severity_score >= 40
-                              ? "rgba(245,158,11,0.9)"
-                              : "rgba(34,197,94,0.9)",
+                              ? "rgba(217,119,6,0.92)"
+                              : "rgba(16,185,129,0.92)",
                           color: "white",
                           backdropFilter: "blur(4px)",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
                         }}
                       >
                         Severity: {report.severity_score}
@@ -1139,16 +1147,16 @@ export default function PublicMap() {
                           fontWeight: 600,
                           background:
                             report.status === "RESOLVED"
-                              ? "rgba(34,197,94,0.15)"
-                              : "rgba(239,68,68,0.15)",
+                              ? "#ECFAEB"
+                              : "#fef2f2",
                           color:
                             report.status === "RESOLVED"
-                              ? "#4ade80"
-                              : "#f87171",
+                              ? "#083701"
+                              : "#dc2626",
                           border: `1px solid ${
                             report.status === "RESOLVED"
-                              ? "rgba(34,197,94,0.3)"
-                              : "rgba(239,68,68,0.3)"
+                              ? "#DCE5DF"
+                              : "#fecaca"
                           }`,
                         }}
                       >
@@ -1159,8 +1167,8 @@ export default function PublicMap() {
                             borderRadius: "50%",
                             background:
                               report.status === "RESOLVED"
-                                ? "#22c55e"
-                                : "#ef4444",
+                                ? "#16a34a"
+                                : "#dc2626",
                           }}
                         />
                         {report.status === "RESOLVED"
@@ -1173,34 +1181,36 @@ export default function PublicMap() {
                     <div
                       style={{
                         fontSize: 11,
-                        color: "#71717a",
+                        color: "#52525b",
                         marginBottom: 10,
                         lineHeight: 1.7,
                       }}
                     >
                       <div>
-                        📍 {report.latitude.toFixed(5)},{" "}
-                        {report.longitude.toFixed(5)}
+                        📍 <span style={{ color: "#18181b", fontWeight: 500 }}>{report.latitude.toFixed(5)},{" "}
+                        {report.longitude.toFixed(5)}</span>
                       </div>
                       <div>
                         🕐 Dilaporkan:{" "}
-                        {new Date(report.created_at).toLocaleDateString(
-                          "id-ID",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }
-                        )}
+                        <span style={{ color: "#18181b", fontWeight: 500 }}>
+                          {new Date(report.created_at).toLocaleDateString(
+                            "id-ID",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </span>
                       </div>
                       {report.status === "RESOLVED" && (
                         <div>
                           {report.resolved_at ? (
                             <>
                               ✅ Selesai diperbaiki:{" "}
-                              <span style={{ color: "#4ade80" }}>
+                              <span style={{ color: "#083701", fontWeight: 600 }}>
                                 {new Date(report.resolved_at).toLocaleDateString(
                                   "id-ID",
                                   {
@@ -1214,7 +1224,7 @@ export default function PublicMap() {
                               </span>
                             </>
                           ) : (
-                            <span style={{ color: "#52525b" }}>
+                            <span style={{ color: "#a1a1aa" }}>
                               ✅ Waktu penyelesaian belum tercatat
                             </span>
                           )}
@@ -1236,16 +1246,16 @@ export default function PublicMap() {
                             justifyContent: "center",
                             gap: 6,
                             width: "100%",
-                            padding: "7px 12px",
+                            padding: "8px 12px",
                             borderRadius: 8,
                             fontSize: 11,
-                            fontWeight: 600,
-                            background:
-                              "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.15))",
-                            color: "#fbbf24",
-                            border: "1px solid rgba(245,158,11,0.25)",
+                            fontWeight: 700,
+                            background: "#083701",
+                            color: "#FFFFFF",
+                            border: "1px solid #083701",
                             cursor: "pointer",
                             transition: "all 0.2s",
+                            boxShadow: "0 2px 4px rgba(8,55,1,0.2)",
                           }}
                         >
                           🔧 Klaim & Selesaikan Perbaikan (Kontraktor)
@@ -1261,10 +1271,10 @@ export default function PublicMap() {
                             padding: "7px 10px",
                             borderRadius: 8,
                             fontSize: 10.5,
-                            fontWeight: 600,
-                            background: "rgba(113,113,122,0.12)",
-                            color: "#a1a1aa",
-                            border: "1px dashed rgba(161,161,170,0.3)",
+                            fontWeight: 500,
+                            background: "#f4f4f5",
+                            color: "#71717a",
+                            border: "1px dashed #d4d4d8",
                             textAlign: "center",
                             lineHeight: 1.4,
                           }}
@@ -1283,7 +1293,7 @@ export default function PublicMap() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-6 justify-center text-xs text-zinc-500">
+      <div className="flex items-center gap-6 justify-center text-xs text-zinc-600 font-medium">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-red-500 inline-block" />
           <span>Menunggu Inspeksi</span>
@@ -1308,12 +1318,12 @@ export default function PublicMap() {
         />
       )}
 
-      {/* Custom popup styles — override Leaflet defaults for dark theme */}
+      {/* Custom popup styles — override Leaflet defaults for clean light theme */}
       <style>{`
         .civic-popup .leaflet-popup-content-wrapper {
           background: transparent !important;
           box-shadow: none !important;
-          border-radius: 12px !important;
+          border-radius: 18px !important;
           padding: 0 !important;
         }
         .civic-popup .leaflet-popup-content {
@@ -1321,18 +1331,19 @@ export default function PublicMap() {
           line-height: normal !important;
         }
         .civic-popup .leaflet-popup-tip {
-          background: #18181b !important;
-          box-shadow: none !important;
+          background: #FFFFFF !important;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06) !important;
         }
         .leaflet-popup-close-button {
-          color: #a1a1aa !important;
+          color: #71717a !important;
           font-size: 18px !important;
-          top: 4px !important;
-          right: 6px !important;
+          top: 6px !important;
+          right: 8px !important;
           z-index: 10 !important;
+          transition: color 0.15s ease !important;
         }
         .leaflet-popup-close-button:hover {
-          color: #e4e4e7 !important;
+          color: #18181b !important;
         }
       `}</style>
     </div>
