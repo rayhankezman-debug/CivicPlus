@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  Shield,
   Brain,
   MapPin,
   Link2,

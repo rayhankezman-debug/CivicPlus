@@ -6,8 +6,8 @@
  */
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
 import {
-  Shield,
   Users,
   HardHat,
   Lock,
@@ -189,9 +189,16 @@ export default function RoleSwitcher() {
       <header className="sticky top-0 z-[1000] w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur-md transition-all shadow-xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-6 h-16">
           {/* Brand */}
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-[#083701] flex items-center justify-center shadow-xs flex-shrink-0">
-              <Shield className="w-4 h-4 text-[#98FE67]" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+              <Image
+                src="/logo.png"
+                alt="CivicPlus Logo"
+                width={32}
+                height={32}
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
             <div>
               <div className="flex items-baseline leading-none font-serif text-lg font-bold tracking-tight">
